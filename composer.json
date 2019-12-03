@@ -1,0 +1,17 @@
+{
+    "name": "php/mvc",
+    "authors": [
+        {
+            "name": "loan-petit",
+            "email": "petit.loan1@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "./"
+        ]
+    },
+    "require": {
+        "twig/twig": "^2.11"
+    }
+}

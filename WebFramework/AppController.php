@@ -26,7 +26,7 @@ class AppController {
     $this->orm = ORM::getInstance();
     // TODO: Uncomment this lines in order to link the ORM to the database
     //   specified in the 'db.php' file.
-    // $this->orm->connect(require '../config/db.php');
+    $this->orm->connect(require '../config/db.php');
 
     $this->session = Session::getInstance();
     $this->flashError = FlashError::getInstance();

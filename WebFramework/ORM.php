@@ -7,6 +7,7 @@ use \PDO;
 class ORM {
 
   private $db;
+  private $toStore;
 
   private static $instance = null;
 
@@ -61,6 +62,7 @@ class ORM {
   public function persist($object)
   {
     // TODO: Implement this function
+    $this->toStore.push($object);
   }
 
   /**

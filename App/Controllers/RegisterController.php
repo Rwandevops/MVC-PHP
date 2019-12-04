@@ -7,7 +7,7 @@ use WebFramework\Router;
 use WebFramework\Request;
 
 use App\Models\User;
-
+use WebFramework\ORM;
 
 class RegisterController extends AppController
 {
@@ -35,8 +35,8 @@ class RegisterController extends AppController
             return;
         }
 
-        var_dump($user);
-        // TODO: Store user in the database with the ORM (this->orm).
+        $ORM = ORM::getInstance();
+        $ORM->persist($user);
         die();
     }
 }

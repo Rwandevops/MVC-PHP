@@ -3,8 +3,8 @@
 $router->use('GET', 'Webroot', new App\Controllers\HomeController(), 'home_view');
 $router->use('POST', 'Webroot', new App\Controllers\HomeController(), 'home');
 // ********** ARTICLES ************* //
-$router->use('GET', '/article/article', new App\Controllers\ArticleController(), 'article_view');
-$router->use('POST', '/article/article', new App\Controllers\ArticleController(), 'article');
+$router->use('GET', '/article/view', new App\Controllers\ArticleController(), 'article_view');
+$router->use('POST', '/article/view', new App\Controllers\ArticleController(), 'article');
 
 // ********** REGISTER ************* //
 $router->use('GET', '/auth/register', new App\Controllers\RegisterController(), 'register_view');

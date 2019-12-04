@@ -4,25 +4,15 @@ namespace App\Models;
 
 class User
 {
-  /**
-   * @type integer
-   */
   private $id;
-
-  /**
-   * @type string
-   */
   private $username;
-
-  /**
-   * @type string
-   */
   private $email;
-
-  /**
-   * @type string
-   */
   private $password;
+
+  public function __construct()
+  {
+    $this->id = "";
+  }
 
   public function getId(): ?int
   {
@@ -64,6 +54,48 @@ class User
 
     return $this;
   }
+
+  public function getGroup()
+  {
+    return $this->group;
+  }
+
+  public function setGroup(string $group)
+  {
+    $this->group = $group;
+  }
+
+  public function getStatus()
+  {
+    return $this->status;
+  }
+
+  public function setStatus(string $status)
+  {
+    $this->status = $status;
+  }
+
+  public function getCreationDate()
+  {
+    return $this->creation_date;
+  }
+
+  public function setCreationDate(string $creationdate)
+  {
+    $this->creation_date = $creationdate;
+  }
+
+  public function getLastModifDate()
+  {
+    return $this->last_modif_date;
+  }
+
+  public function setLastModifDate(string $last_modif_date)
+  {
+    $this->last_modif_date = $last_modif_date;
+  }
+
+
 
   /**
    * Validate the User model data.

@@ -4,7 +4,8 @@ namespace WebFramework;
 
 use \PDO;
 
-class ORM {
+class ORM
+{
 
   private $db;
   private $toStore;
@@ -15,8 +16,7 @@ class ORM {
    * Private constructor so nobody else can instantiate it.
    */
   private function __construct()
-  {
-  }
+  { }
 
   /**
    * Retrieve the static instance of the ORM.
@@ -25,11 +25,11 @@ class ORM {
    */
   public static function getInstance()
   {
-      if (is_null(self::$instance)) {
-          self::$instance = new ORM();
-      }
+    if (is_null(self::$instance)) {
+      self::$instance = new ORM();
+    }
 
-      return self::$instance;
+    return self::$instance;
   }
 
   /**
@@ -47,9 +47,9 @@ class ORM {
         $config['password'],
         $config['options']
       );
+
       return $this->db;
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       echo $e->getMessage();
     }
   }
@@ -71,12 +71,12 @@ class ORM {
    */
   public function flush()
   {
-    foreach($this->toStore as $obj){
+    foreach ($this->toStore as $obj) {
       // tri par classe d'objet
-      switch(get_class($obj)){ 
+      switch (get_class($obj)) {
         case 'User':
           // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch($obj['id']){
+          switch ($obj['id']) {
             case '':
               //INSERT
               $sql_insert = $db->prepare('INSERT INTO users (username, email, mdp, groupe, status, creation_date, last_modif_date) VALUES (:username, :email, :mdp, :groupe, :status, :creation_date, :last_modif_date)');
@@ -106,7 +106,7 @@ class ORM {
 
         case 'Article':
           // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch($obj['id']){
+          switch ($obj['id']) {
             case '':
               //INSERT
               $sql_insert = $db->prepare('INSERT INTO articles (title, content, text, author_id) VALUES (:title, :content, :text, :author_id)');
@@ -116,7 +116,7 @@ class ORM {
               $sql_insert->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
               $sql_insert->execute();
               // comment on gère la table N:N article-tags?  
-            break;
+              break;
             default:
               //UPDATE
               $sql_update = $db->prepare('UPDATE articles SET title = :title, content = :content, text = :text, author_id = :author_id WHERE id = :id');
@@ -128,11 +128,11 @@ class ORM {
               $sql_update->execute();
               // comment on gère la table N:N article-tags?
               break;
-            } // fin case Article
-  
+          } // fin case Article
+
         case 'Comments':
           // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch($obj['id']){
+          switch ($obj['id']) {
             case '':
               //INSERT
               $sql_insert = $db->prepare('INSERT INTO comments (author_id, content, validated, article_id) VALUES (:author_id, :content, :validated, :article_id)');
@@ -156,7 +156,7 @@ class ORM {
 
         case 'Content':
           // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch($obj['id']){
+          switch ($obj['id']) {
             case '':
               //INSERT
               $sql_insert = $db->prepare('INSERT INTO contents (type, article_id, content_link) VALUES (:type, :article_id, :content_link)');
@@ -182,31 +182,31 @@ class ORM {
   public function remove()
   {
     // Tri par classe d'objet
-    switch(get_class($obj)){ 
+    switch (get_class($obj)) {
       case 'User':
         $sql_delete = $db->prepare('DELETE FROM users WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
-  
+
       case 'Article':
         $sql_delete = $db->prepare('DELETE FROM articles WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
-  
+
       case 'Content':
         $sql_delete = $db->prepare('DELETE FROM articles WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
-  
+
       case 'Comment':
-          $sql_delete = $db->prepare('DELETE FROM comments WHERE id = :id');
-          $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
-          $sql_delete->execute();
-          break;
-  
+        $sql_delete = $db->prepare('DELETE FROM comments WHERE id = :id');
+        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->execute();
+        break;
+
       case 'Tags':
         $sql_delete = $db->prepare('DELETE FROM tags WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);

@@ -217,38 +217,15 @@ class ORM {
 
   public function select($classe, $param, $value)
   {
-    // Tri par classe d'objet
-    switch($classe){ 
-      case 'User':
-        $sql_select = $db->prepare(`SELECT * FROM users WHERE $param = :param`);
-        $sql_select->bindparam($param, $value, PDO::PARAM_INT);
+    if(typeof($param === 'string')){
+        $sql_select = $db->prepare(`SELECT * FROM $classe WHERE $param = :param`);
+        $sql_select->bindparam($param, $value, PDO::PARAM_STR);
         $sql_select->execute();
-        break;
-  
-      case 'Article':
-        $sql_select = $db->prepare('SELECT FROM articles WHERE id = :id');
-        $sql_select->bindparam('id', $obj['id'], PDO::PARAM_INT);
-        $sql_select->execute();
-        break;
-  
-      case 'Content':
-        $sql_delete = $db->prepare('DELETE FROM articles WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
-        $sql_delete->execute();
-        break;
-  
-      case 'Comment':
-          $sql_delete = $db->prepare('DELETE FROM comments WHERE id = :id');
-          $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
-          $sql_delete->execute();
-          break;
-  
-      case 'Tags':
-        $sql_delete = $db->prepare('DELETE FROM tags WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
-        $sql_delete->execute();
-        break;
-    } // fin switch
-  } // fin fonction remove
-
+    }
+    else{
+      $sql_select = $db->prepare(`SELECT * FROM $classe WHERE id = :id`);
+      $sql_select->bindparam('id', $value, PDO::PARAM_INT);
+      $sql_select->execute();
+    }
+  } // fin fonction select
 } // fin classe ORM

@@ -70,7 +70,111 @@ class ORM {
    */
   public function flush()
   {
-    // TODO: Implement this function
+    foreach($this->toStore as $obj){
+      // tri par classe d'objet
+        switch(get_class($obj)){ 
+        case 'User':
+          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
+          switch($obj['id']){
+            case '':
+              //INSERT
+              $sql_insert = $db->prepare('INSERT INTO users (username, email, mdp, groupe, status, creation_date, last_modif_date) VALUES (:username, :email, :mdp, :groupe, :status, :creation_date, :last_modif_date)');
+              $sql_insert->bindparam('username', $obj['username'], PDO::PARAM_STR);
+              $sql_insert->bindparam('email', $obj['email'], PDO::PARAM_STR);
+              $sql_insert->bindparam('mdp', $obj['mdp'], PDO::PARAM_STR);
+              $sql_insert->bindparam('groupe', $obj['groupe'], PDO::PARAM_STR);
+              $sql_insert->bindparam('status', $obj['status'], PDO::PARAM_STR);
+              $sql_insert->bindparam('creation_date', $obj['creation_date'], PDO::PARAM_STR);
+              $sql_insert->bindparam('last_modif_date', $obj['last_modif_date'], PDO::PARAM_STR);
+              $sql_insert->execute();
+              break;
+            default:
+              //UPDATE
+              $sql_update = $db->prepare('UPDATE users SET username = :username, email = :email, mdp = :mdp, groupe = :groupe, status = :status, creation_date = :creation_date, last_modif_date = :last_modif_date WHERE id = :id');
+              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('username', $obj['username'], PDO::PARAM_STR);
+              $sql_update->bindparam('email', $obj['email'], PDO::PARAM_STR);
+              $sql_update->bindparam('mdp', $obj['mdp'], PDO::PARAM_STR);
+              $sql_update->bindparam('groupe', $obj['groupe'], PDO::PARAM_STR);
+              $sql_update->bindparam('status', $obj['status'], PDO::PARAM_STR);
+              $sql_update->bindparam('creation_date', $obj['creation_date'], PDO::PARAM_STR);
+              $sql_update->bindparam('last_modif_date', $obj['last_modif_date'], PDO::PARAM_STR);
+              $sql_update->execute();
+              break;
+          }
+
+        case 'Article':
+          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
+          switch($obj['id']){
+            case '':
+              //INSERT
+              $sql_insert = $db->prepare('INSERT INTO articles (title, content, text, author_id) VALUES (:title, :content, :text, :author_id)');
+              $sql_insert->bindparam('title', $obj['title'], PDO::PARAM_STR);
+              $sql_insert->bindparam('content', $obj['content'], PDO::PARAM_STR);
+              $sql_insert->bindparam('text', $obj['text'], PDO::PARAM_STR);
+              $sql_insert->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
+              $sql_insert->execute();
+              // comment on gère la table N:N article-tags?  
+            break;
+            default:
+              //UPDATE
+              $sql_update = $db->prepare('UPDATE articles SET title = :title, content = :content, text = :text, author_id = :author_id WHERE id = :id');
+              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('title', $obj['title'], PDO::PARAM_STR);
+              $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
+              $sql_update->bindparam('text', $obj['text'], PDO::PARAM_STR);
+              $sql_update->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
+              $sql_update->execute();
+              // comment on gère la table N:N article-tags?
+              break;
+            }
+  
+        case 'Comments':
+          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
+          switch($obj['id']){
+            case '':
+              //INSERT
+              $sql_insert = $db->prepare('INSERT INTO comments (author_id, content, validated, article_id) VALUES (:author_id, :content, :validated, :article_id)');
+              $sql_insert->bindparam('author_id', $obj['author_id']);
+              $sql_insert->bindparam('content', $obj['content']);
+              $sql_insert->bindparam('validated', $obj['validated']);
+              $sql_insert->bindparam('article_id', $obj['article_id']);
+              $sql_insert->execute();
+              break;
+            default:
+              //UPDATE
+              $sql_update = $db->prepare('UPDATE comments SET author_id = :author_id, content = :content, validated = :validated, article_id = :article_id,  WHERE id = :id');
+              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
+              $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
+              $sql_update->bindparam('validated', $obj['validated'], PDO::PARAM_BOOL);
+              $sql_update->bindparam('article_id', $obj['article_id'], PDO::PARAM_INT);
+              $sql_update->execute();
+              break;
+          }
+        case 'Content':
+          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
+          switch($obj['id']){
+            case '':
+              //INSERT
+              $sql_insert = $db->prepare('INSERT INTO contents (type, article_id, content_link) VALUES (:type, :article_id, :content_link)');
+              $sql_insert->bindparam('type', $obj['type']);
+              $sql_insert->bindparam('article_id', $obj['article_id']);
+              $sql_insert->bindparam('content_link', $obj['content_link']);
+              $sql_insert->execute();
+              break;
+            default:
+              //UPDATE
+              $sql_update = $db->prepare('UPDATE contents SET type = :type, article_id = :article_id, content_link = :content_link WHERE id = :id');
+              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('type', $obj['type'], PDO::PARAM_STR);
+              $sql_update->bindparam('article_id', $obj['article_id'], PDO::PARAM_INT);
+              $sql_update->bindparam('content_link', $obj['content_link'], PDO::PARAM_STR);
+              $sql_update->execute();
+              break;
+          }  
+      }
+    }
   }
 
 }

@@ -16,7 +16,9 @@ class ORM
    * Private constructor so nobody else can instantiate it.
    */
   private function __construct()
-  { }
+  {
+    $this->toStore = array();
+  }
 
   /**
    * Retrieve the static instance of the ORM.
@@ -60,10 +62,8 @@ class ORM
    * @param Model $object - Object that will be persisted.
    */
   public function persist($object)
-  {
-    // TODO: Implement this function
+  {  // TODO: Implement this function
     array_push($this->toStore, $object);
-    return $this->toStore;
   }
 
   /**
@@ -73,44 +73,43 @@ class ORM
   {
     foreach ($this->toStore as $obj) {
       // tri par classe d'objet
+      var_dump(get_class($obj));
       switch (get_class($obj)) {
-        case 'User':
-          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch ($obj['id']) {
+        case 'App\Models\User':
+          // Choix INSERT ou UPDATE en fonction de $obj->getId() vide ou pas
+          switch ($obj->getId()) {
             case '':
               //INSERT
-              $sql_insert = $this->db->prepare('INSERT INTO users (username, email, mdp, groupe, status, creation_date, last_modif_date) VALUES (:username, :email, :mdp, :groupe, :status, :creation_date, :last_modif_date)');
-              $sql_insert->bindparam('username', $obj['username'], PDO::PARAM_STR);
-              $sql_insert->bindparam('email', $obj['email'], PDO::PARAM_STR);
-              $sql_insert->bindparam('mdp', $obj['mdp'], PDO::PARAM_STR);
-              $sql_insert->bindparam('groupe', $obj['groupe'], PDO::PARAM_STR);
-              $sql_insert->bindparam('status', $obj['status'], PDO::PARAM_STR);
-              $sql_insert->bindparam('creation_date', $obj['creation_date'], PDO::PARAM_STR);
-              $sql_insert->bindparam('last_modif_date', $obj['last_modif_date'], PDO::PARAM_STR);
+              $sql_insert = $this->db->prepare('INSERT INTO users (username, email, password, groupe, status) VALUES (:username, :email, :password, :groupe, :status)');
+              $sql_insert->bindparam('username', $obj->getUsername(), PDO::PARAM_STR);
+              $sql_insert->bindparam('email', $obj->getEmail(), PDO::PARAM_STR);
+              $sql_insert->bindparam('password', $obj->getPassword(), PDO::PARAM_STR);
+              $sql_insert->bindparam('groupe', $obj->getGroupe(), PDO::PARAM_STR);
+              $sql_insert->bindparam('status', $obj->getStatus(), PDO::PARAM_STR);
               $sql_insert->execute();
               break;
             default:
               //UPDATE
-              $sql_update = $this->db->prepare('UPDATE users SET username = :username, email = :email, mdp = :mdp, groupe = :groupe, status = :status, creation_date = :creation_date, last_modif_date = :last_modif_date WHERE id = :id');
-              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
-              $sql_update->bindparam('username', $obj['username'], PDO::PARAM_STR);
-              $sql_update->bindparam('email', $obj['email'], PDO::PARAM_STR);
-              $sql_update->bindparam('mdp', $obj['mdp'], PDO::PARAM_STR);
-              $sql_update->bindparam('groupe', $obj['groupe'], PDO::PARAM_STR);
-              $sql_update->bindparam('status', $obj['status'], PDO::PARAM_STR);
-              $sql_update->bindparam('creation_date', $obj['creation_date'], PDO::PARAM_STR);
-              $sql_update->bindparam('last_modif_date', $obj['last_modif_date'], PDO::PARAM_STR);
+              $sql_update = $this->db->prepare('UPDATE users SET username = :username, email = :email, password = :password, groupe = :groupe, status = :status WHERE id = :id');
+              $sql_update->bindparam('id', $obj->getId(), PDO::PARAM_INT);
+              $sql_update->bindparam('username', $obj->getUsername(), PDO::PARAM_STR);
+              $sql_update->bindparam('email', $obj->getEmail(), PDO::PARAM_STR);
+              $sql_update->bindparam('password', $obj->getPassword(), PDO::PARAM_STR);
+              $sql_update->bindparam('groupe', $obj->getGroupe(), PDO::PARAM_STR);
+              $sql_update->bindparam('status', $obj->getStatus(), PDO::PARAM_STR);
+
               $sql_update->execute();
               break;
           } // fin case User
+          break;
 
-        case 'Article':
-          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch ($obj['id']) {
+        case 'App\Models\Article':
+          // Choix INSERT ou UPDATE en fonction de $obj->getId() vide ou pas
+          switch ($obj->getId()) {
             case '':
               //INSERT
               $sql_insert = $this->db->prepare('INSERT INTO articles (title, content, text, author_id) VALUES (:title, :content, :text, :author_id)');
-              $sql_insert->bindparam('title', $obj['title'], PDO::PARAM_STR);
+              $sql_insert->bindparam('title', $obj->getTitle(), PDO::PARAM_STR);
               $sql_insert->bindparam('content', $obj['content'], PDO::PARAM_STR);
               $sql_insert->bindparam('text', $obj['text'], PDO::PARAM_STR);
               $sql_insert->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
@@ -120,8 +119,8 @@ class ORM
             default:
               //UPDATE
               $sql_update = $this->db->prepare('UPDATE articles SET title = :title, content = :content, text = :text, author_id = :author_id WHERE id = :id');
-              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
-              $sql_update->bindparam('title', $obj['title'], PDO::PARAM_STR);
+              $sql_update->bindparam('id', $obj->getId(), PDO::PARAM_INT);
+              $sql_update->bindparam('title', $obj->getTitle(), PDO::PARAM_STR);
               $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
               $sql_update->bindparam('text', $obj['text'], PDO::PARAM_STR);
               $sql_update->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
@@ -130,9 +129,9 @@ class ORM
               break;
           } // fin case Article
 
-        case 'Comments':
-          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch ($obj['id']) {
+        case 'App\Models\Comments':
+          // Choix INSERT ou UPDATE en fonction de $obj->getId() vide ou pas
+          switch ($obj->getId()) {
             case '':
               //INSERT
               $sql_insert = $this->db->prepare('INSERT INTO comments (author_id, content, validated, article_id) VALUES (:author_id, :content, :validated, :article_id)');
@@ -145,7 +144,7 @@ class ORM
             default:
               //UPDATE
               $sql_update = $this->db->prepare('UPDATE comments SET author_id = :author_id, content = :content, validated = :validated, article_id = :article_id,  WHERE id = :id');
-              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('id', $obj->getId(), PDO::PARAM_INT);
               $sql_update->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
               $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
               $sql_update->bindparam('validated', $obj['validated'], PDO::PARAM_BOOL);
@@ -154,9 +153,9 @@ class ORM
               break;
           } // fin case Comment
 
-        case 'Content':
-          // Choix INSERT ou UPDATE en fonction de $obj['id'] vide ou pas
-          switch ($obj['id']) {
+        case 'App\Models\Content':
+          // Choix INSERT ou UPDATE en fonction de $obj->getId() vide ou pas
+          switch ($obj->getId()) {
             case '':
               //INSERT
               $sql_insert = $this->db->prepare('INSERT INTO contents (type, article_id, content_link) VALUES (:type, :article_id, :content_link)');
@@ -168,7 +167,7 @@ class ORM
             default:
               //UPDATE
               $sql_update = $this->db->prepare('UPDATE contents SET type = :type, article_id = :article_id, content_link = :content_link WHERE id = :id');
-              $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
+              $sql_update->bindparam('id', $obj->getId(), PDO::PARAM_INT);
               $sql_update->bindparam('type', $obj['type'], PDO::PARAM_STR);
               $sql_update->bindparam('article_id', $obj['article_id'], PDO::PARAM_INT);
               $sql_update->bindparam('content_link', $obj['content_link'], PDO::PARAM_STR);
@@ -183,33 +182,33 @@ class ORM
   {
     // Tri par classe d'objet
     switch (get_class($obj)) {
-      case 'User':
+      case 'App\Models\User':
         $sql_delete = $this->db->prepare('DELETE FROM users WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->bindparam('id', $obj->getId(), PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
-      case 'Article':
+      case 'App\Models\Article':
         $sql_delete = $this->db->prepare('DELETE FROM articles WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->bindparam('id', $obj->getId(), PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
-      case 'Content':
+      case 'App\Models\Content':
         $sql_delete = $this->db->prepare('DELETE FROM articles WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->bindparam('id', $obj->getId(), PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
-      case 'Comment':
+      case 'App\Models\Comment':
         $sql_delete = $this->db->prepare('DELETE FROM comments WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->bindparam('id', $obj->getId(), PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
-      case 'Tags':
+      case 'App\Models\Tags':
         $sql_delete = $this->db->prepare('DELETE FROM tags WHERE id = :id');
-        $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
+        $sql_delete->bindparam('id', $obj->getId(), PDO::PARAM_INT);
         $sql_delete->execute();
         break;
     } // fin switch

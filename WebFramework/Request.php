@@ -23,7 +23,7 @@ class Request {
     $url = trim(
         parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'
     );
-    $pos = strpos($url, '/');
+    $pos = strpos($url);
     $this->base = substr($url, 0, ($pos) !== false ? $pos + 1 : 0);
     $this->route = substr($url, ($pos) !== false ? $pos : 0);
   }

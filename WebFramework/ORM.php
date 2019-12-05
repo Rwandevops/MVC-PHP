@@ -62,7 +62,7 @@ class ORM
   public function persist($object)
   {
     // TODO: Implement this function
-    $this->toStore.push($object);
+    array_push($this->toStore, $object);
     return $this->toStore;
   }
 
@@ -79,7 +79,7 @@ class ORM
           switch ($obj['id']) {
             case '':
               //INSERT
-              $sql_insert = $db->prepare('INSERT INTO users (username, email, mdp, groupe, status, creation_date, last_modif_date) VALUES (:username, :email, :mdp, :groupe, :status, :creation_date, :last_modif_date)');
+              $sql_insert = $this->db->prepare('INSERT INTO users (username, email, mdp, groupe, status, creation_date, last_modif_date) VALUES (:username, :email, :mdp, :groupe, :status, :creation_date, :last_modif_date)');
               $sql_insert->bindparam('username', $obj['username'], PDO::PARAM_STR);
               $sql_insert->bindparam('email', $obj['email'], PDO::PARAM_STR);
               $sql_insert->bindparam('mdp', $obj['mdp'], PDO::PARAM_STR);
@@ -91,7 +91,7 @@ class ORM
               break;
             default:
               //UPDATE
-              $sql_update = $db->prepare('UPDATE users SET username = :username, email = :email, mdp = :mdp, groupe = :groupe, status = :status, creation_date = :creation_date, last_modif_date = :last_modif_date WHERE id = :id');
+              $sql_update = $this->db->prepare('UPDATE users SET username = :username, email = :email, mdp = :mdp, groupe = :groupe, status = :status, creation_date = :creation_date, last_modif_date = :last_modif_date WHERE id = :id');
               $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
               $sql_update->bindparam('username', $obj['username'], PDO::PARAM_STR);
               $sql_update->bindparam('email', $obj['email'], PDO::PARAM_STR);
@@ -109,7 +109,7 @@ class ORM
           switch ($obj['id']) {
             case '':
               //INSERT
-              $sql_insert = $db->prepare('INSERT INTO articles (title, content, text, author_id) VALUES (:title, :content, :text, :author_id)');
+              $sql_insert = $this->db->prepare('INSERT INTO articles (title, content, text, author_id) VALUES (:title, :content, :text, :author_id)');
               $sql_insert->bindparam('title', $obj['title'], PDO::PARAM_STR);
               $sql_insert->bindparam('content', $obj['content'], PDO::PARAM_STR);
               $sql_insert->bindparam('text', $obj['text'], PDO::PARAM_STR);
@@ -119,7 +119,7 @@ class ORM
               break;
             default:
               //UPDATE
-              $sql_update = $db->prepare('UPDATE articles SET title = :title, content = :content, text = :text, author_id = :author_id WHERE id = :id');
+              $sql_update = $this->db->prepare('UPDATE articles SET title = :title, content = :content, text = :text, author_id = :author_id WHERE id = :id');
               $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
               $sql_update->bindparam('title', $obj['title'], PDO::PARAM_STR);
               $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
@@ -135,7 +135,7 @@ class ORM
           switch ($obj['id']) {
             case '':
               //INSERT
-              $sql_insert = $db->prepare('INSERT INTO comments (author_id, content, validated, article_id) VALUES (:author_id, :content, :validated, :article_id)');
+              $sql_insert = $this->db->prepare('INSERT INTO comments (author_id, content, validated, article_id) VALUES (:author_id, :content, :validated, :article_id)');
               $sql_insert->bindparam('author_id', $obj['author_id']);
               $sql_insert->bindparam('content', $obj['content']);
               $sql_insert->bindparam('validated', $obj['validated']);
@@ -144,7 +144,7 @@ class ORM
               break;
             default:
               //UPDATE
-              $sql_update = $db->prepare('UPDATE comments SET author_id = :author_id, content = :content, validated = :validated, article_id = :article_id,  WHERE id = :id');
+              $sql_update = $this->db->prepare('UPDATE comments SET author_id = :author_id, content = :content, validated = :validated, article_id = :article_id,  WHERE id = :id');
               $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
               $sql_update->bindparam('author_id', $obj['author_id'], PDO::PARAM_INT);
               $sql_update->bindparam('content', $obj['content'], PDO::PARAM_STR);
@@ -159,7 +159,7 @@ class ORM
           switch ($obj['id']) {
             case '':
               //INSERT
-              $sql_insert = $db->prepare('INSERT INTO contents (type, article_id, content_link) VALUES (:type, :article_id, :content_link)');
+              $sql_insert = $this->db->prepare('INSERT INTO contents (type, article_id, content_link) VALUES (:type, :article_id, :content_link)');
               $sql_insert->bindparam('type', $obj['type']);
               $sql_insert->bindparam('article_id', $obj['article_id']);
               $sql_insert->bindparam('content_link', $obj['content_link']);
@@ -167,7 +167,7 @@ class ORM
               break;
             default:
               //UPDATE
-              $sql_update = $db->prepare('UPDATE contents SET type = :type, article_id = :article_id, content_link = :content_link WHERE id = :id');
+              $sql_update = $this->db->prepare('UPDATE contents SET type = :type, article_id = :article_id, content_link = :content_link WHERE id = :id');
               $sql_update->bindparam('id', $obj['id'], PDO::PARAM_INT);
               $sql_update->bindparam('type', $obj['type'], PDO::PARAM_STR);
               $sql_update->bindparam('article_id', $obj['article_id'], PDO::PARAM_INT);
@@ -179,36 +179,36 @@ class ORM
     } // fin foreach
   } // fin fonction flush
 
-  public function remove()
+  public function remove($obj)
   {
     // Tri par classe d'objet
     switch (get_class($obj)) {
       case 'User':
-        $sql_delete = $db->prepare('DELETE FROM users WHERE id = :id');
+        $sql_delete = $this->db->prepare('DELETE FROM users WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
       case 'Article':
-        $sql_delete = $db->prepare('DELETE FROM articles WHERE id = :id');
+        $sql_delete = $this->db->prepare('DELETE FROM articles WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
       case 'Content':
-        $sql_delete = $db->prepare('DELETE FROM articles WHERE id = :id');
+        $sql_delete = $this->db->prepare('DELETE FROM articles WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
       case 'Comment':
-        $sql_delete = $db->prepare('DELETE FROM comments WHERE id = :id');
+        $sql_delete = $this->db->prepare('DELETE FROM comments WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
 
       case 'Tags':
-        $sql_delete = $db->prepare('DELETE FROM tags WHERE id = :id');
+        $sql_delete = $this->db->prepare('DELETE FROM tags WHERE id = :id');
         $sql_delete->bindparam('id', $obj['id'], PDO::PARAM_INT);
         $sql_delete->execute();
         break;
@@ -217,13 +217,12 @@ class ORM
 
   public function select($classe, $param, $value)
   {
-    if(typeof($param === 'string')){
-        $sql_select = $db->prepare(`SELECT * FROM $classe WHERE $param = :param`);
-        $sql_select->bindparam($param, $value, PDO::PARAM_STR);
-        $sql_select->execute();
-    }
-    else{
-      $sql_select = $db->prepare(`SELECT * FROM $classe WHERE id = :id`);
+    if (gettype($param) === 'string') {
+      $sql_select = $this->db->prepare(`SELECT * FROM $classe WHERE $param = :param`);
+      $sql_select->bindparam($param, $value, PDO::PARAM_STR);
+      $sql_select->execute();
+    } else {
+      $sql_select = $this->db->prepare(`SELECT * FROM $classe WHERE id = :id`);
       $sql_select->bindparam('id', $value, PDO::PARAM_INT);
       $sql_select->execute();
     }

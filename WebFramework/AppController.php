@@ -21,7 +21,8 @@ class AppController
   public function __construct()
   {
     $loader = new Twig_Loader_Filesystem("../App/Views");
-    $twig = new Twig_Environment($loader, []);
+    $twig = new Twig_Environment($loader, ['debug' => true]);
+    $twig->addExtension(new \Twig\Extension\DebugExtension());
     $this->twig = $twig;
 
     $this->orm = ORM::getInstance();
@@ -41,7 +42,10 @@ class AppController
    */
   public function render(string $view, array $context = [])
   {
-    echo $this->twig->render($view, $context);
+    echo $this->twig->render($view, array_merge([
+      'session' => $this->session,
+      'error' => $this->flashError,
+    ], $context));
   }
 
   /**

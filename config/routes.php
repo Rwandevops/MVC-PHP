@@ -13,6 +13,7 @@ $router->use('POST', '/auth/register', new App\Controllers\RegisterController(),
 // ********** LOGIN *************** //
 $router->use('GET', '/auth/login', new App\Controllers\LoginController(), 'login_view');
 $router->use('POST', '/auth/login', new App\Controllers\LoginController(), 'login');
+$router->use('GET', '/auth/logout', new App\Controllers\LoginController(), 'logout');
 
 // ********** ADMIN USER ********** //
 $router->use('GET', '/auth/admin', new App\Controllers\AdminUserController(), 'adminuser_view');

@@ -1,4 +1,4 @@
-{# auth/register.html.twig #} {% extends 'base.html.twig' %} {% block body %}
+{# auth/register.html.twig #} {% extends 'base.html.twig' %} {% block body %} {{error.get() | raw}}
 
 
   <div class="text-left mt-5">
@@ -63,7 +63,7 @@
             <input
               type="password"
               id="password_confirm"
-              name="password_confirm"
+              name="passwordconfirm"
               placeholder=""
               class="input-xlarge"
             />

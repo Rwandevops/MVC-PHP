@@ -44,9 +44,16 @@ class LoginController extends AppController
     } else {
       var_dump('Connection failed');
     }
-
+    $this->session->set('id', $userInformationArray['id']);
+    $this->session->set('username', $userInformationArray['username']);
+    $this->session->set('groupe', $userInformationArray['groupe']);
     $this->redirect('/' . $request->base . '', '302');
 
     die();
   } // fin de la fonction Login
+
+  public function logout()
+  {
+    $this->session->destroy();
+  }
 } // fin de la classe LoginController

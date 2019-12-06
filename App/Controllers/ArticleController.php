@@ -13,6 +13,7 @@ class ArticleController extends AppController
     public function article_view(Request $request)
     {
         return $this->render('article.html.twig', [
+
             'base' => $request->base,
             'error' => $this->flashError
         ]);

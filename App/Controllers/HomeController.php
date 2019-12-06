@@ -13,7 +13,9 @@ class HomeController extends AppController
 
     public function home_view(Request $request)
     {
+
         return $this->render('home.html.twig', [
+
             'base' => $request->base,
             'error' => $this->flashError
         ]);

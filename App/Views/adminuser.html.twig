@@ -1,1 +1,23 @@
-{# index view #} {% extends 'base.html.twig' %} {% block body %} {% endblock %}
+{# index view #} {% extends 'base.html.twig' %}
+    {% block body %}
+        <div id="adminuser" class="adminuser">
+            <h2>Admin's user's page</h2>
+            <div id="searchBar" class="searchBar">
+                <label for="searchByName">Search user by name</label>
+                    <input id="searchByName" class="searchByName" name="searchByName" placeholder="Enter a name">
+                <label for="searchByEmail">Search user by email</label>
+                    <input id="searchByEmail" class="searchByEmail" name="searchByEmail" placeholder="Enter a mail adress">
+            </div class="adminuserform">
+                <form action="" method="get" id="formUserData">
+                    <label for="id">User's Id</label>
+                        <input id="id" class="id" name="id" placeholder="id">
+                    <label for="name">User's name</label>
+                        <input id="name" class="name" name="name" placeholder="name">
+                    <label for="email">User's email</label>
+                        <input id="email" class="email" name="email" placeholder="email">
+                    <input type="submit" name="usercreate" class="usercreatebutton">
+                    <input type="submit" name="userupdate" class="userupdate">
+                </form>
+            </div>
+        </div>
+    {% endblock %}

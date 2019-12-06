@@ -10,10 +10,11 @@ use WebFramework\ORM;
 use App\Helpers\Session;
 use App\Helpers\FlashError;
 
-class AppController {
+class AppController
+{
 
   private $twig;
-  private $orm;
+  protected $orm;
   public $session;
   public $flashError;
 
@@ -49,8 +50,8 @@ class AppController {
    * @param string $url - Redirection URL.
    * @param string $status - HTTP status code for the redirection.
    */
-  public function redirect(string $url, string $status) {
+  public function redirect(string $url, string $status)
+  {
     header('Location: ' . $url, true, $status);
   }
-
 }

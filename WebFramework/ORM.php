@@ -73,7 +73,7 @@ class ORM
   {
     foreach ($this->toStore as $obj) {
       // tri par classe d'objet
-      var_dump(get_class($obj));
+
       switch (get_class($obj)) {
         case 'App\Models\User':
           // Choix INSERT ou UPDATE en fonction de $obj->getId() vide ou pas
@@ -83,7 +83,7 @@ class ORM
               $sql_insert = $this->db->prepare('INSERT INTO users (username, email, password, groupe, status) VALUES (:username, :email, :password, :groupe, :status)');
               $sql_insert->bindparam('username', $obj->getUsername(), PDO::PARAM_STR);
               $sql_insert->bindparam('email', $obj->getEmail(), PDO::PARAM_STR);
-              $sql_insert->bindparam('password', $obj->getPassword(), PDO::PARAM_STR);
+              $sql_insert->bindparam('password', password_hash($obj->getPassword(), PASSWORD_DEFAULT), PDO::PARAM_STR);
               $sql_insert->bindparam('groupe', $obj->getGroupe(), PDO::PARAM_STR);
               $sql_insert->bindparam('status', $obj->getStatus(), PDO::PARAM_STR);
               $sql_insert->execute();
@@ -216,10 +216,15 @@ class ORM
 
   public function select($classe, $param, $value)
   {
+    $userInformationArray = array();
+
     if (gettype($param) === 'string') {
-      $sql_select = $this->db->prepare(`SELECT * FROM $classe WHERE $param = :param`);
-      $sql_select->bindparam($param, $value, PDO::PARAM_STR);
+      $sql_select = $this->db->prepare('SELECT * FROM ' . $classe . ' WHERE ' . $param . ' = :param');
+      $sql_select->bindparam(':param', $value, PDO::PARAM_STR);
       $sql_select->execute();
+      $userInformationArray = $sql_select->fetch(PDO::FETCH_ASSOC);
+      var_dump($userInformationArray);
+      return $userInformationArray;
     } else {
       $sql_select = $this->db->prepare(`SELECT * FROM $classe WHERE id = :id`);
       $sql_select->bindparam('id', $value, PDO::PARAM_INT);

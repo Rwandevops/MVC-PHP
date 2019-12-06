@@ -22,10 +22,13 @@ class RegisterController extends AppController
 
     public function register(Request $request)
     {
+
         $user = new User();
-        $user->setUsername($request->params['username']);
-        $user->setEmail($request->params['email']);
-        $user->setPassword($request->params['password']);
+        $user
+            ->setUsername($request->params['username'])
+            ->setEmail($request->params['email'])
+            ->setPassword($request->params['password'])
+            ->setPasswordConfirmation($request->params['passwordconfirm']);
 
         try {
             $user->validate();
@@ -35,8 +38,11 @@ class RegisterController extends AppController
             return;
         }
 
-        $ORM = ORM::getInstance();
-        $ORM->persist($user);
+
+        $this->orm->persist($user);
+        $this->orm->flush();
+        $this->redirect('/' . $request->base . 'auth/login', '302');
+
         die();
     }
 }

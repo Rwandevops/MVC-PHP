@@ -8,13 +8,17 @@ class User
   private $username;
   private $email;
   private $password;
+  private $password_confirmation;
+
 
   public function __construct()
   {
     $this->id = "";
+    $this->groupe = "";
+    $this->status = "";
   }
 
-  public function getId(): ?int
+  public function getId()
   {
     return $this->id;
   }
@@ -55,14 +59,21 @@ class User
     return $this;
   }
 
-  public function getGroup()
+  public function setPasswordConfirmation(string $password_confirmation): self
   {
-    return $this->group;
+    $this->password_confirmation = $password_confirmation;
+
+    return $this;
   }
 
-  public function setGroup(string $group)
+  public function getGroupe()
   {
-    $this->group = $group;
+    return $this->groupe;
+  }
+
+  public function setGroupe(string $groupe)
+  {
+    $this->groupe = $groupe;
   }
 
   public function getStatus()
@@ -73,26 +84,6 @@ class User
   public function setStatus(string $status)
   {
     $this->status = $status;
-  }
-
-  public function getCreationDate()
-  {
-    return $this->creation_date;
-  }
-
-  public function setCreationDate(string $creationdate)
-  {
-    $this->creation_date = $creationdate;
-  }
-
-  public function getLastModifDate()
-  {
-    return $this->last_modif_date;
-  }
-
-  public function setLastModifDate(string $last_modif_date)
-  {
-    $this->last_modif_date = $last_modif_date;
   }
 
 
@@ -109,16 +100,25 @@ class User
     if (empty($this->username) || strlen($this->username) <= 3) {
       $err = $err . "Invalid 'username' field. Must have more than 3 characters.<br>";
     }
-    if (empty($this->email) || preg_match('#^[a-zA-Z0-9]+@[a-zA-Z]{2,}\.[a-z]{2,4}$#', $this->email) != 1) {
+    if (empty($this->email) || preg_match("/^([\w\-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/i", $this->email) != 1) {
       $err = $err . "Invalid 'email' field. Wrong format.<br>";
     }
     if (empty($this->password)) {
       $err = $err . "Invalid 'password' field. Can't be blank.<br>";
     }
 
+    if (empty($this->password_confirmation)) {
+      $err = $err . 'Please confirm your password. Both passwords must be the same.';
+    }
+
+    if ($this->password != $this->password_confirmation) {
+      $err = $err . 'Invalid password confirmation.';
+    }
+
     if (!empty($err)) {
       throw new \Exception($err);
     }
+
 
     return $err;
   }
